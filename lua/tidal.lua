@@ -24,7 +24,7 @@ local DEFAULTS = {
 local KEYMAPS = {
   send_line = {
     mode = 'n',
-    action = "V<cmd>lua require('tidal').send_reg()<CR><ESC>",
+    action = "Vy<cmd>lua require('tidal').send_reg()<CR><ESC>",
     description = "send line to Tidal",
   },
   send_node = {
