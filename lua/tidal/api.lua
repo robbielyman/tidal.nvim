@@ -61,8 +61,11 @@ M.send = message.send
 --- Send the current line to the tidal interpreter
 M.send_line = function()
   local line = select.get_current_line()
-  highlight.apply_highlight(line.start, line.finish)
-  M.send(line.lines[1])
+  local text = line.lines[1]
+  if #text > 0 then
+    highlight.apply_highlight(line.start, line.finish)
+    M.send(text)
+  end
 end
 
 --- Send the last visual selection to the tidal interpreter

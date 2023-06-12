@@ -85,7 +85,7 @@ function M.get_current_line()
   local line = unpack(vim.api.nvim_win_get_cursor(0), 1) - 1
   local text = vim.api.nvim_get_current_line()
   return {
-    lines = { line },
+    lines = { text },
     start = { line, 0 },
     finish = { line, #text },
   }
