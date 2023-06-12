@@ -7,10 +7,10 @@ local M = {}
 --- Send a command to the tidal interpreter
 ---@param text string
 function M.send(text)
-  if not state.tidal.proc then
+  if not state.ghci.proc then
     return
   end
-  vim.api.nvim_chan_send(state.tidal.proc, text .. "\n")
+  vim.api.nvim_chan_send(state.ghci.proc, text .. "\n")
 end
 
 --- Send a multiline command to the tidal interpreter

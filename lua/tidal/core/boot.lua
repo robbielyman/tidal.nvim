@@ -8,28 +8,28 @@ function M.tidal(args)
   if not args.enabled then
     return
   end
-  if state.tidal.buf then
-    local ok = pcall(vim.api.nvim_set_current_buf, state.tidal.buf)
+  if state.ghci.buf then
+    local ok = pcall(vim.api.nvim_set_current_buf, state.ghci.buf)
     if not ok then
-      state.tidal.buf = nil
+      state.ghci.buf = nil
       M.tidal(args)
       return
     end
   else
-    state.tidal.buf = vim.api.nvim_create_buf(false, false)
+    state.ghci.buf = vim.api.nvim_create_buf(false, false)
     M.tidal(args)
     return
   end
-  state.tidal.proc = vim.fn.termopen(
+  state.ghci.proc = vim.fn.termopen(
     args.cmd .. " -XOverloadedStrings " .. table.concat(args.args, " ") .. " -ghci-script=" .. args.file,
     {
       on_exit = function()
-        if state.tidal.buf ~= nil and #vim.fn.win_findbuf(state.tidal.buf) > 0 then
-          vim.api.nvim_win_close(vim.fn.win_findbuf(state.tidal.buf)[1], true)
+        if state.ghci.buf ~= nil and #vim.fn.win_findbuf(state.ghci.buf) > 0 then
+          vim.api.nvim_win_close(vim.fn.win_findbuf(state.ghci.buf)[1], true)
         end
-        vim.api.nvim_buf_delete(state.tidal.buf, {})
-        state.tidal.buf = nil
-        state.tidal.proc = nil
+        vim.api.nvim_buf_delete(state.ghci.buf, {})
+        state.ghci.buf = nil
+        state.ghci.proc = nil
       end,
     }
   )

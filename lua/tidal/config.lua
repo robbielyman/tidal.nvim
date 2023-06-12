@@ -1,4 +1,3 @@
-local api = require("tidal.api")
 local M = {}
 
 ---@class TidalBootConfig
@@ -49,16 +48,16 @@ local defaults = {
 }
 
 local keymaps = {
-  send_line = { callback = api.send_line, desc = "Send current line to tidal" },
+  send_line = { callback = require("tidal.api").send_line, desc = "Send current line to tidal" },
   send_visual = {
     callback = [[<Esc><Cmd>lua require("tidal.api").send_visual()<CR>gv]],
     desc = "Send current visual selection to tidal",
   },
-  send_block = { callback = api.send_block, desc = "Send current block to tidal" },
-  send_node = { callback = api.send_node, desc = "Send current TS node to tidal" },
+  send_block = { callback = require("tidal.api").send_block, desc = "Send current block to tidal" },
+  send_node = { callback = require("tidal.api").send_node, desc = "Send current TS node to tidal" },
   send_hush = {
     callback = function()
-      api.send("hush")
+      require("tidal.api").send("hush")
     end,
     desc = "Send 'hush' to tidal",
   },
@@ -72,9 +71,9 @@ M.options = {}
 function M.setup(options)
   M.options = vim.tbl_deep_extend("force", defaults, options or {})
   vim.api.nvim_create_user_command("TidalLaunch", function()
-    api.launch_tidal(M.options.boot)
+    require("tidal.api").launch_tidal(M.options.boot)
   end, { desc = "Launch Tidal instance" })
-  vim.api.nvim_create_user_command("TidalExit", api.exit_tidal, { desc = "Quit Tidal instance" })
+  vim.api.nvim_create_user_command("TidalExit", require("tidal.api").exit_tidal, { desc = "Quit Tidal instance" })
   vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
     pattern = { "*.tidal" },
     callback = function()

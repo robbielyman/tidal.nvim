@@ -4,6 +4,8 @@ local api = require("tidal.api")
 
 local Tidal = {}
 
+---Configure Tidal plugin
+---@param options TidalConfig | nil
 function Tidal.setup(options)
   -- TODO: Check version support
   if vim.fn.has("nvim-0.8.0") == 0 then

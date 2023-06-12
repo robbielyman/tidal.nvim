@@ -7,7 +7,7 @@ local state = {
   ---@type boolean
   launched = false,
   ---@type TidalProcState
-  tidal = {},
+  ghci = {},
   ---@type TidalProcState
   sclang = {},
 }

@@ -5,6 +5,7 @@ local notify = require("tidal.util.notify")
 local util = require("tidal.util")
 local select = require("tidal.util.select")
 local highlight = require("tidal.util.highlight")
+
 --- FIXME: cyclic imports
 --
 -- local config = require("tidal.config")
@@ -47,8 +48,8 @@ function M.exit_tidal()
     notify.warn("Tidal is not running. Launch with ':TidalLaunch'")
     return
   end
-  if state.tidal.proc then
-    vim.fn.jobstop(state.tidal.proc)
+  if state.ghci.proc then
+    vim.fn.jobstop(state.ghci.proc)
   end
   if state.sclang.proc then
     vim.fn.jobstop(state.sclang.proc)
