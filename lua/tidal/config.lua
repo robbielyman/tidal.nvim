@@ -14,6 +14,8 @@ local M = {}
 ---@class TidalConfig
 ---@field boot TidalBootConfig
 ---@field mappings table
+---@field highlightgroup? string
+
 local defaults = {
   boot = {
     tidal = {
@@ -32,6 +34,10 @@ local defaults = {
     send_line = { mode = { "i", "n" }, key = "<S-CR>" },
     send_block = { mode = { "i", "n" }, key = "<M-CR>" },
     send_hush = { mode = "n", key = "<leader-Esc>" },
+  },
+  selection_highlight = {
+    higroup = "IncSearch",
+    timeout = 150,
   },
 }
 

@@ -2,7 +2,22 @@ local boot = require("tidal.core.boot")
 local message = require("tidal.core.message")
 local state = require("tidal.core.state")
 local notify = require("tidal.util.notify")
-
+local util = require("tidal.util")
+local select = require("tidal.util.select")
+local highlight = require("tidal.util.highlight")
+--- FIXME: cyclic imports
+--
+-- local config = require("tidal.config")
+--
+-- ---@param start { [1]: integer, [2]: integer } Start position {line, col}
+-- ---@param finish { [1]: integer, [2]: integer } Finish position {line, col}
+-- local function apply_highlight(start, finish)
+--   highlight.apply_highlight(start, finish, {
+--     higroup = config.selection_highlight,
+--     timeout = config.timeout,
+--   })
+-- end
+--
 local M = {}
 
 --- Begin a Tidal session
@@ -45,15 +60,19 @@ M.send = message.send
 
 --- Send the current line to the tidal interpreter
 M.send_line = function()
-  M.send(vim.api.nvim_get_current_line())
+  local line = select.get_current_line()
+  highlight.apply_highlight(line.start, line.finish)
+  M.send(line.lines[1])
 end
 
 --- Send the current block to tidal interpreter
 M.send_block = function()
-  -- FIXME: Hack
-  vim.api.nvim_feedkeys(message.set_operator_pending(), "n", false)
-  -- motion to select inner paragraph
-  vim.api.nvim_feedkeys("ip", "n", false)
+  if util.is_empty(vim.api.nvim_get_current_line()) then
+    return
+  end
+  local block = select.get_block()
+  highlight.apply_highlight(block.start, block.finish)
+  message.send_multiline(block.lines)
 end
 
 --- Send current TS block to tidal interpreter
