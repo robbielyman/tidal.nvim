@@ -97,16 +97,15 @@ function M.get_block()
   -- row is 1-indexed
   local row, _ = unpack(vim.api.nvim_win_get_cursor(0))
 
-  -- block_start is zero indexed
+  -- block_start/end are zero indexed for nvim_buf_get_lines
   local block_start = row - 1
   while block_start > 0 and not util.line_empty(block_start - 1) do
     block_start = block_start - 1
   end
 
-  -- Block end is zero indexed
   local block_end = row
   local n_lines = vim.api.nvim_buf_line_count(0)
-  while block_end < n_lines - 1 and not util.line_empty(block_end) do
+  while block_end < n_lines and not util.line_empty(block_end) do
     block_end = block_end + 1
   end
   local lines = vim.api.nvim_buf_get_lines(0, block_start, block_end, true)
