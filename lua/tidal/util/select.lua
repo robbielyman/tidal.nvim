@@ -4,8 +4,8 @@ local M = {}
 
 ---@class TextRange
 ---@field lines string[] lines of text in the range
----@field start { [1]: integer, [2]: integer } Start position {line, col}
----@field finish { [1]: integer, [2]: integer } Finish position {line, col}
+---@field start { [1]: integer, [2]: integer } Start position {line, col} (zero-indexed)
+---@field finish { [1]: integer, [2]: integer } Finish position {line, col} (zero-indexed)
 
 --- Get a range from either the 'visual' or 'motion' marks
 ---@param mode "visual" | "motion"
@@ -21,24 +21,24 @@ local function get_mark(mode)
   local end_line, end_col = unpack(vim.api.nvim_buf_get_mark(0, end_char))
   local selected_lines = vim.api.nvim_buf_get_lines(0, start_line - 1, end_line, false)
   return {
-    start = { start_line, start_col },
-    finish = { end_line, end_col },
+    start = { start_line - 1, start_col },
+    finish = { end_line - 1, end_col },
     lines = selected_lines,
   }
 end
 
 --- Get the last visual selection
----@return TextRange
+---@return TextRange | nil
 function M.get_visual()
   local mode = vim.fn.visualmode()
   local range = get_mark("visual")
-  -- line-visual
+  -- line-wise visual
   if mode == "V" then
     return range
   end
 
   if mode == "v" then
-    -- regular-visual
+    -- character-wise visual
     -- return the buffer text encompassed by the selection
     local start_line, start_col = unpack(range.start)
     local finish_line, finish_col = unpack(range.finish)
@@ -47,37 +47,36 @@ function M.get_visual()
       finish_col = finish_col - 1
     end
     return {
-      lines = vim.api.nvim_buf_get_text(0, start_line - 1, start_col - 1, finish_line - 1, finish_col, {}),
+      lines = vim.api.nvim_buf_get_text(0, start_line, start_col, finish_line, finish_col + 1, {}),
       start = { start_line, start_col },
       finish = { finish_line, finish_col },
     }
   end
 
-  -- -- block-visual
-  -- -- return the lines encompassed by the selection, each truncated by the start and end columns
-  -- if mode == "\x16" then
-  --   error("Not implemented", vim.log.levels.ERROR)
-  --   local _, start_col = unpack(range.start)
-  --   local _, end_col = unpack(range.finish)
-  --   -- exclude the last col of the block if "selection" is set to "exclusive"
-  --   if vim.opt.selection:get() == "exclusive" then
-  --     end_col = end_col - 1
-  --   end
-  --   -- exchange start and end columns for proper substring indexing if needed
-  --   -- e.g. instead of str:sub(10, 5), do str:sub(5, 10)
-  --   if start_col > end_col then
-  --     start_col, end_col = end_col, start_col
-  --   end
-  --   -- iterate over lines, truncating each one
-  --   return {
-  --     start = range.start,
-  --     finish = range.finish,
-  --     lines = vim.tbl_map(function(line)
-  --       return line:sub(start_col, end_col)
-  --     end, range.lines),
-  --   }
-  -- end
-  error("Unsupported visual mode '" .. mode .. "''", vim.log.levels.ERROR)
+  -- block-wise visual
+  -- return the lines encompassed by the selection, each truncated by the start and end columns
+  if mode == "\x16" then
+    error("Blockwise visual selection not implemented", vim.log.levels.ERROR)
+    -- local _, start_col = unpack(range.start)
+    -- local _, end_col = unpack(range.finish)
+    -- -- exclude the last col of the block if "selection" is set to "exclusive"
+    -- if vim.opt.selection:get() == "exclusive" then
+    --   end_col = end_col - 1
+    -- end
+    -- -- exchange start and end columns for proper substring indexing if needed
+    -- -- e.g. instead of str:sub(10, 5), do str:sub(5, 10)
+    -- if start_col > end_col then
+    --   start_col, end_col = end_col, start_col
+    -- end
+    -- -- iterate over lines, truncating each one
+    -- return {
+    --   start = range.start,
+    --   finish = range.finish,
+    --   lines = vim.tbl_map(function(line)
+    --     return line:sub(start_col, end_col)
+    --   end, range.lines),
+    -- }
+  end
 end
 
 --- Get the current line

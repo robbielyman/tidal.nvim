@@ -65,6 +65,15 @@ M.send_line = function()
   M.send(line.lines[1])
 end
 
+--- Send the last visual selection to the tidal interpreter
+M.send_visual = function()
+  local visual = select.get_visual()
+  if visual then
+    highlight.apply_highlight(visual.start, visual.finish)
+    message.send_multiline(visual.lines)
+  end
+end
+
 --- Send the current block to tidal interpreter
 M.send_block = function()
   if util.is_empty(vim.api.nvim_get_current_line()) then

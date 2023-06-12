@@ -32,7 +32,8 @@ local defaults = {
   },
   mappings = {
     send_line = { mode = { "i", "n" }, key = "<S-CR>" },
-    send_block = { mode = { "i", "n" }, key = "<M-CR>" },
+    send_visual = { mode = { "x" }, key = "<S-CR>" },
+    send_block = { mode = { "i", "n", "x" }, key = "<M-CR>" },
     send_node = { mode = "n", key = "<Leader><CR>" },
     send_hush = { mode = "n", key = "<leader><Esc>" },
   },
@@ -44,6 +45,10 @@ local defaults = {
 
 local keymaps = {
   send_line = { callback = api.send_line, desc = "Send current line to tidal" },
+  send_visual = {
+    callback = [[<Esc><Cmd>lua require("tidal.api").send_visual()<CR>gv]],
+    desc = "Send current visual selection to tidal",
+  },
   send_block = { callback = api.send_block, desc = "Send current block to tidal" },
   send_node = { callback = api.send_node, desc = "Send current TS node to tidal" },
   send_hush = {
