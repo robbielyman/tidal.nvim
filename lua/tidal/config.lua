@@ -20,7 +20,9 @@ local defaults = {
   boot = {
     tidal = {
       file = vim.api.nvim_get_runtime_file("bootfiles/BootTidal.hs", false)[1],
-      args = {},
+      args = {
+        "-v0",
+      },
       enabled = true,
     },
     sclang = {

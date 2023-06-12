@@ -89,36 +89,11 @@ end
 
 --- Send current TS block to tidal interpreter
 function M.send_node()
-  local node = vim.treesitter.get_node()
-  local root
-  if node then
-    root = node:tree():root()
+  local block = select.get_node()
+  if block then
+    highlight.apply_highlight(block.start, block.finish)
+    message.send_multiline(block.lines)
   end
-  if not root then
-    return
-  end
-  local parent
-  if node then
-    parent = node:parent()
-  end
-  while node ~= nil and not node:equal(root) do
-    local t = node:type()
-    --- We break at top level statements and function definitions
-    if t == "top_splice" or t == "function" then
-      break
-    end
-    node = parent
-    if node then
-      parent = node:parent()
-    end
-  end
-  if not node then
-    return
-  end
-  local start_row, start_col, end_row, end_col = vim.treesitter.get_node_range(node)
-  local lines = vim.api.nvim_buf_get_text(0, start_row, start_col, end_row, end_col, {})
-  highlight.apply_highlight({ start_row, start_col }, { end_row, end_col })
-  message.send_multiline(lines)
 end
 
 return M

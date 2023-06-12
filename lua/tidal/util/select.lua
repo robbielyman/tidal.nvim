@@ -117,4 +117,42 @@ function M.get_block()
   }
 end
 
+--- Get top level TS node at current position
+---@return TextRange | nil
+function M.get_node()
+  local node = vim.treesitter.get_node()
+  local root
+  if node then
+    root = node:tree():root()
+  end
+  if not root then
+    return
+  end
+  local parent
+  if node then
+    parent = node:parent()
+  end
+  while node ~= nil and not node:equal(root) do
+    local t = node:type()
+    --- We break at top level statements and function definitions
+    if t == "top_splice" or t == "function" then
+      break
+    end
+    node = parent
+    if node then
+      parent = node:parent()
+    end
+  end
+  if not node then
+    return
+  end
+  local start_row, start_col, finish_row, finish_col = vim.treesitter.get_node_range(node)
+  local lines = vim.api.nvim_buf_get_text(0, start_row, start_col, finish_row, finish_col, {})
+  return {
+    start = { start_row, start_col },
+    finish = { finish_row, finish_col },
+    lines = lines,
+  }
+end
+
 return M
