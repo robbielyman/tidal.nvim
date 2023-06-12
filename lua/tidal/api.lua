@@ -89,9 +89,10 @@ function M.send_node()
   if node then
     parent = node:parent()
   end
-  while node ~= nil and node ~= root do
+  while node ~= nil and not node:equal(root) do
     local t = node:type()
-    if t == "top_splice" then
+    --- We break at top level statements and function definitions
+    if t == "top_splice" or t == "function" then
       break
     end
     node = parent
@@ -104,6 +105,7 @@ function M.send_node()
   end
   local start_row, start_col, end_row, end_col = vim.treesitter.get_node_range(node)
   local lines = vim.api.nvim_buf_get_text(0, start_row, start_col, end_row, end_col, {})
+  highlight.apply_highlight({ start_row, start_col }, { end_row, end_col })
   message.send_multiline(lines)
 end
 

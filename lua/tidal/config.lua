@@ -33,7 +33,8 @@ local defaults = {
   mappings = {
     send_line = { mode = { "i", "n" }, key = "<S-CR>" },
     send_block = { mode = { "i", "n" }, key = "<M-CR>" },
-    send_hush = { mode = "n", key = "<leader-Esc>" },
+    send_node = { mode = "n", key = "<Leader><CR>" },
+    send_hush = { mode = "n", key = "<leader><Esc>" },
   },
   selection_highlight = {
     higroup = "IncSearch",
@@ -41,11 +42,12 @@ local defaults = {
   },
 }
 
-local default_mappings = {
-  send_line = { action = api.send_line, desc = "Send current line to tidal" },
-  send_block = { action = api.send_block, desc = "Send current block to tidal" },
+local keymaps = {
+  send_line = { callback = api.send_line, desc = "Send current line to tidal" },
+  send_block = { callback = api.send_block, desc = "Send current block to tidal" },
+  send_node = { callback = api.send_node, desc = "Send current TS node to tidal" },
   send_hush = {
-    action = function()
+    callback = function()
       api.send("hush")
     end,
     desc = "Send 'hush' to tidal",
@@ -69,8 +71,8 @@ function M.setup(options)
       vim.api.nvim_buf_set_option(0, "filetype", "haskell")
       for name, mapping in pairs(M.options.mappings) do
         if mapping then
-          local command = default_mappings[name]
-          vim.keymap.set(mapping.mode, mapping.key, command.action, { buffer = true, desc = command.desc })
+          local command = keymaps[name]
+          vim.keymap.set(mapping.mode, mapping.key, command.callback, { buffer = true, desc = command.desc })
         end
       end
     end,
