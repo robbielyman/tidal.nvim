@@ -4,9 +4,10 @@ local M = {}
 ---@class TidalBootConfig
 ---@field tidal TidalProcConfig
 ---@field sclang TidalProcConfig
----@field split "v"
+---@field split "v" | nil
 
 ---@class TidalProcConfig
+---@field cmd string
 ---@field file string
 ---@field args table<string>
 ---@field enabled boolean
@@ -14,11 +15,12 @@ local M = {}
 ---@class TidalConfig
 ---@field boot TidalBootConfig
 ---@field mappings table
----@field highlightgroup? string
+---@field highlightgroup string | nil
 
 local defaults = {
   boot = {
     tidal = {
+      cmd = "ghci",
       file = vim.api.nvim_get_runtime_file("bootfiles/BootTidal.hs", false)[1],
       args = {
         "-v0",
@@ -26,6 +28,7 @@ local defaults = {
       enabled = true,
     },
     sclang = {
+      cmd = "sclang",
       file = vim.api.nvim_get_runtime_file("bootfiles/BootSuperDirt.scd", false)[1],
       args = {},
       enabled = false,
