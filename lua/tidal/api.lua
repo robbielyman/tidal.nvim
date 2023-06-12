@@ -38,6 +38,17 @@ function M.launch_tidal(args)
     vim.cmd(args.split == "v" and "split" or "vsplit")
     boot.sclang(args.sclang)
   end
+  -- Follow terminal output
+  if state.ghci.buf then
+    vim.api.nvim_buf_call(state.ghci.buf, function()
+      vim.cmd.normal("G")
+    end)
+  end
+  if state.sclang.buf then
+    vim.api.nvim_buf_call(state.sclang.buf, function()
+      vim.cmd.normal("G")
+    end)
+  end
   vim.api.nvim_set_current_win(current_win)
   state.launched = true
 end
