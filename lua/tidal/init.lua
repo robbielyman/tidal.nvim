@@ -7,7 +7,7 @@ local Tidal = {}
 local keymaps = {
   send_line = { callback = api.send_line, desc = "Send current line to tidal" },
   send_visual = {
-    callback = [[<Esc><Cmd>lua api.send_visual()<CR>gv]],
+    callback = [[<Esc><Cmd>lua require("tidal").api.send_visual()<CR>gv]],
     desc = "Send current visual selection to tidal",
   },
   send_block = { callback = api.send_block, desc = "Send current block to tidal" },
