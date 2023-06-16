@@ -24,7 +24,7 @@ local function setup_user_commands()
   vim.api.nvim_create_user_command("TidalLaunch", function()
     api.launch_tidal(config.options.boot)
   end, { desc = "Launch Tidal instance" })
-  vim.api.nvim_create_user_command("TidalExit", api.exit_tidal, { desc = "Quit Tidal instance" })
+  vim.api.nvim_create_user_command("TidalQuit", api.exit_tidal, { desc = "Quit Tidal instance" })
 end
 
 local function setup_autocmds()
