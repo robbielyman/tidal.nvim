@@ -57,6 +57,8 @@ end
 
 M.send = message.send
 
+M.send_multiline = message.send_multiline
+
 --- Send the current line to the tidal interpreter
 M.send_line = function()
   local line = select.get_current_line()
