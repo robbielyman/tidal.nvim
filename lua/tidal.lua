@@ -1,5 +1,5 @@
 local T = {}
-local ts_utils = require 'nvim-treesitter.ts_utils'
+local ts_utils = require 'vim.treesitter'
 
 local DEFAULTS = {
   boot = {
